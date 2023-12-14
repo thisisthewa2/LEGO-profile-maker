@@ -22,3 +22,5 @@ jobs:
         with:
           vercel-token: ${{ secrets.CICDTOKEN }}
           vercel-project-id: prj_XqqdlnCjWxmXyBtDjspPnGjcn5ub
+          vercel-org-id: M6jjGnAwwPse6P4MFUJ4EffJ
+          vercel-org-name: thisisthewa2
