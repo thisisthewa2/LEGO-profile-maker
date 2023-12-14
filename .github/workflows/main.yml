@@ -1,8 +1,27 @@
 name: My First Workflow
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  echo:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo 'Hello, github action!'
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-project-id: YOUR_VERCEL_PROJECT_ID
+          vercel-org-id: YOUR_VERCEL_ORG_ID
+          vercel-org-name: YOUR_VERCEL_ORG_NAME
+          vercel-region: YOUR_VERCEL_REGION
