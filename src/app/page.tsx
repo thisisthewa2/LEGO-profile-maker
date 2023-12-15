@@ -16,12 +16,22 @@ const Home = () => {
     try {
       const div = profileRef.current;
       const canvas = await html2canvas(div, {
+        // 배경을 투명하게 설정
         backgroundColor: null,
         scale: 2,
       });
+
       canvas.toBlob((blob) => {
         if (blob !== null) {
-          saveAs(blob, 'result.png');
+          const url = window.URL.createObjectURL(blob);
+
+          // 가상의 a 태그를 생성하여 클릭 이벤트를 발생시킴
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'result.png';
+          link.click();
+
+          window.URL.revokeObjectURL(url); // 사용한 URL 해제
         }
       });
     } catch (error) {
