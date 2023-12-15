@@ -10,24 +10,25 @@ import Wheel from '@uiw/react-color-wheel';
 const Home = () => {
   const profileRef = useRef(null);
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  // 프로필 이미지 다운로드 함수
-  // 프로필 이미지 다운로드 함수
-  const downloadProfileImage = () => {
-    if (profileRef && profileRef.current) {
-      html2canvas(profileRef.current, {
-        // 배경을 투명하게 설정
-        backgroundColor: 'transparent',
-      }).then((canvas) => {
-        // 캡처된 canvas를 blob으로 변환
-        canvas.toBlob((blob) => {
-          // blob을 파일로 저장
-          if (blob) {
-            saveAs(blob, 'profile.png');
-          }
-        }, 'image/png');
+  const downloadProfileImage = async () => {
+    if (!profileRef.current) return;
+
+    try {
+      const div = profileRef.current;
+      const canvas = await html2canvas(div, {
+        backgroundColor: null,
+        scale: 2,
       });
+      canvas.toBlob((blob) => {
+        if (blob !== null) {
+          saveAs(blob, 'result.png');
+        }
+      });
+    } catch (error) {
+      console.error('Error converting div to image:', error);
     }
   };
+
   return (
     <div className="flex flex-col justify-center max-w-screen-2xl">
       <Header />
