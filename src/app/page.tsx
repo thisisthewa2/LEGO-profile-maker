@@ -4,13 +4,12 @@ import AvatarEditor from './components/AvatarEditor';
 import Profile from './components/Profile';
 import Header from './components/Header';
 import html2canvas from 'html2canvas';
-import { hsvaToHex } from '@uiw/color-convert';
+import { saveAs } from 'file-saver';
 import Wheel from '@uiw/react-color-wheel';
 
 const Home = () => {
   const profileRef = useRef(null);
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-
   // 프로필 이미지 다운로드 함수
   const downloadProfileImage = () => {
     if (profileRef && profileRef.current) {
@@ -18,10 +17,19 @@ const Home = () => {
         // 배경을 투명하게 설정
         backgroundColor: 'transparent',
       }).then((canvas) => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'profile.png';
-        link.click();
+        // 캡처된 canvas를 blob으로 변환
+        canvas.toBlob((blob) => {
+          // blob을 파일로 저장
+          if (blob) {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'profile.png';
+            // 클릭 이벤트를 트리거하여 다운로드
+            link.click();
+            window.URL.revokeObjectURL(url);
+          }
+        }, 'image/png');
       });
     }
   };
@@ -31,6 +39,8 @@ const Home = () => {
       <Header />
       <div className="flex justify-center items-center p-10">
         <Wheel
+          width={100}
+          height={100}
           color={hsva}
           onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
         />
