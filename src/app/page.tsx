@@ -11,6 +11,7 @@ const Home = () => {
   const profileRef = useRef(null);
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
   // 프로필 이미지 다운로드 함수
+  // 프로필 이미지 다운로드 함수
   const downloadProfileImage = () => {
     if (profileRef && profileRef.current) {
       html2canvas(profileRef.current, {
@@ -21,19 +22,12 @@ const Home = () => {
         canvas.toBlob((blob) => {
           // blob을 파일로 저장
           if (blob) {
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'profile.png';
-            // 클릭 이벤트를 트리거하여 다운로드
-            link.click();
-            window.URL.revokeObjectURL(url);
+            saveAs(blob, 'profile.png');
           }
         }, 'image/png');
       });
     }
   };
-
   return (
     <div className="flex flex-col justify-center max-w-screen-2xl">
       <Header />
