@@ -14,29 +14,43 @@ const Home = () => {
     if (!profileRef.current) return;
 
     try {
+      const vp =
+        document.getElementById('viewportMeta')?.getAttribute('content') ?? '';
+
+      // Viewport 변경
+      document
+        .getElementById('viewportMeta')
+        ?.setAttribute('content', 'width=800');
+
       const div = profileRef.current;
-      const canvas = await html2canvas(div, {
-        // 배경을 투명하게 설정
-        backgroundColor: null,
-        scale: 2,
-      });
+      const canvas = await html2canvas(div);
 
-      canvas.toBlob((blob) => {
-        if (blob !== null) {
-          const url = window.URL.createObjectURL(blob);
+      // 이미지 다운로드
+      saveScreenshot(canvas);
 
-          // 가상의 a 태그를 생성하여 클릭 이벤트를 발생시킴
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'result.png';
-          link.click();
-
-          window.URL.revokeObjectURL(url); // 사용한 URL 해제
-        }
-      });
+      // Viewport를 원래대로 복원
+      document.getElementById('viewportMeta')?.setAttribute('content', vp);
     } catch (error) {
       console.error('Error converting div to image:', error);
     }
+  };
+
+  const saveScreenshot = (canvas: HTMLCanvasElement) => {
+    canvas.toBlob((blob) => {
+      if (blob !== null) {
+        const url = window.URL.createObjectURL(blob);
+
+        // 가상의 a 태그를 생성하여 클릭 이벤트를 발생시킴
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'result.png';
+        link.click();
+
+        window.URL.revokeObjectURL(url); // 사용한 URL 해제
+      } else {
+        console.error('Error converting canvas to blob');
+      }
+    });
   };
 
   return (
